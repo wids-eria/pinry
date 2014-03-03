@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
-
+from django.contrib import admin
 from tastypie.api import Api
 
 from .api import ImageResource, ThumbnailResource, PinResource, UserResource
@@ -16,6 +16,7 @@ v1_api.register(UserResource())
 
 
 urlpatterns = patterns('',
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(v1_api.urls, namespace='api')),
 
     url(r'feeds/latest-pins/tag/(?P<tag>(\w|-)+)/', LatestTagPins()),
