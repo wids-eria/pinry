@@ -47,5 +47,13 @@ class Pin(models.Model):
     def __unicode__(self):
         return self.url
 
+
+class WhiteListDomain(models.Model):
+    url = models.TextField(null=True)
+
+    def __unicode__(self):
+        return self.url
+
 admin.site.register(Pin)
 admin.site.register(Image)
+admin.site.register(WhiteListDomain)

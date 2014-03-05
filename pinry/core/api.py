@@ -6,9 +6,8 @@ from tastypie.resources import ModelResource
 from tastypie.validation import Validation
 from django_images.models import Thumbnail
 
-from .models import Pin, Image
+from .models import Pin, Image, WhiteListDomain
 from ..users.models import User
-
 import sys,re
 
 class PinryAuthorization(DjangoAuthorization):
@@ -90,19 +89,14 @@ class ImageResource(ModelResource):
         authorization = DjangoAuthorization()
 
 class WhitelistValidation(Validation):
-    def __init__(self):
-        self.whitelist = [
-            "adafruit.com",
-            "gameslearningsociety.org"
-        ]
-
     def is_valid(self, bundle, request=None):
         errors = {}
         matched = False
 
         if 'url' in bundle.data:
             url = bundle.data['url']
-            for match in self.whitelist:
+            for match in WhiteListDomain.objects.all():
+                match = match.url
                 if re.search("({0})(\/|$)".format(match), url):
                     matched = True
                     break;
