@@ -7,8 +7,8 @@ from django.db import models, transaction
 
 from django_images.models import Image as BaseImage, Thumbnail
 from taggit.managers import TaggableManager
-
 from ..users.models import User
+from django.core.exceptions import ValidationError
 
 
 class ImageManager(models.Manager):
@@ -28,13 +28,11 @@ class ImageManager(models.Manager):
             Thumbnail.objects.get_or_create_at_size(image.pk, size)
         return image
 
-
 class Image(BaseImage):
     objects = ImageManager()
 
     class Meta:
         proxy = True
-
 
 class Pin(models.Model):
     submitter = models.ForeignKey(User)

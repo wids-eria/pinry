@@ -3,11 +3,13 @@ from tastypie.authorization import DjangoAuthorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import Unauthorized
 from tastypie.resources import ModelResource
+from tastypie.validation import Validation
 from django_images.models import Thumbnail
 
 from .models import Pin, Image
 from ..users.models import User
 
+import sys,re
 
 class PinryAuthorization(DjangoAuthorization):
     """
@@ -87,6 +89,28 @@ class ImageResource(ModelResource):
         queryset = Image.objects.all()
         authorization = DjangoAuthorization()
 
+class WhitelistValidation(Validation):
+    def __init__(self):
+        self.whitelist = [
+            "(adafruit.com)",
+            "(gameslearningsociety.org)"
+        ]
+
+    def is_valid(self, bundle, request=None):
+        errors = {}
+
+        matched = False
+        for match in self.whitelist:
+            url = bundle.data['url']
+            if re.search(match, url):
+                print >>sys.stderr, "Matched"
+                matched = True
+                break;
+
+        if not matched:
+            errors = {"url","URL NOT ALLOWED"}
+
+        return errors
 
 class PinResource(ModelResource):
     submitter = fields.ToOneField(UserResource, 'submitter', full=True)
@@ -129,6 +153,9 @@ class PinResource(ModelResource):
             bundle.obj.tags.set(*tags)
         return super(PinResource, self).save_m2m(bundle)
 
+    def clean(self):
+        raise Unauthorized(self.url)
+
     class Meta:
         fields = ['id', 'url', 'origin', 'description']
         ordering = ['id']
@@ -140,3 +167,5 @@ class PinResource(ModelResource):
         include_resource_uri = False
         always_return_data = True
         authorization = PinryAuthorization()
+
+        validation = WhitelistValidation()
