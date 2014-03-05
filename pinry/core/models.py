@@ -9,7 +9,7 @@ from django_images.models import Image as BaseImage, Thumbnail
 from taggit.managers import TaggableManager
 from ..users.models import User
 from django.core.exceptions import ValidationError
-
+from django.contrib import admin
 
 class ImageManager(models.Manager):
     # FIXME: Move this into an asynchronous task
@@ -39,9 +39,13 @@ class Pin(models.Model):
     url = models.URLField(null=True)
     origin = models.URLField(null=True)
     description = models.TextField(blank=True, null=True)
+    learned = models.TextField(blank=True, null=True)
     image = models.ForeignKey(Image, related_name='pin')
     published = models.DateTimeField(auto_now_add=True)
     tags = TaggableManager()
 
     def __unicode__(self):
         return self.url
+
+admin.site.register(Pin)
+admin.site.register(Image)

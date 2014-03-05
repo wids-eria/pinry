@@ -18,6 +18,7 @@ $(window).load(function() {
             submitter: currentUser,
             url: $('#pin-form-image-url').val(),
             description: $('#pin-form-description').val(),
+            learned: $('#pin-form-learned').val(),
             tags: cleanTags($('#pin-form-tags').val())
         }
     }
@@ -27,6 +28,7 @@ $(window).load(function() {
                 submitter: currentUser,
                 image: {thumbnail: {image: $('#pin-form-image-url').val()}},
                 description: $('#pin-form-description').val(),
+                learned: $('#pin-form-learned').val(),
                 tags: cleanTags($('#pin-form-tags').val())
             }]},
             html = renderTemplate('#pins-template', context),
@@ -60,7 +62,7 @@ $(window).load(function() {
         $('body').append(renderTemplate('#pin-form-template', ''));
         var modal = $('#pin-form'),
             formFields = [$('#pin-form-image-url'), $('#pin-form-description'),
-            $('#pin-form-tags')],
+            $('#pin-form-learned'), $('#pin-form-tags')],
             pinFromUrl = getUrlParameter('pin-image-url');
         // If editable grab existing data
         if (editPinId) {
@@ -71,6 +73,7 @@ $(window).load(function() {
                 $('#pin-form-image-url').parent().hide();
                 $('#pin-form-image-upload').parent().hide();
                 $('#pin-form-description').val(editedPin.description);
+                $('#pin-form-learned').val(editedPin.learned);
                 $('#pin-form-tags').val(editedPin.tags);
                 createPinPreviewFromForm();
             });
@@ -133,6 +136,7 @@ $(window).load(function() {
                 var apiUrl = '/api/v1/pin/'+editedPin.id+'/?format=json';
                 var data = {
                     description: $('#pin-form-description').val(),
+                    learned: $('#pin-form-learned').val(),
                     tags: cleanTags($('#pin-form-tags').val())
                 }
                 var promise = $.ajax({
@@ -161,6 +165,7 @@ $(window).load(function() {
                 var data = {
                     submitter: '/api/v1/user/'+currentUser.id+'/',
                     description: $('#pin-form-description').val(),
+                    learned: $('#pin-form-learned').val(),
                     tags: cleanTags($('#pin-form-tags').val())
                 };
                 if (uploadedImage) data.image = '/api/v1/image/'+uploadedImage+'/';

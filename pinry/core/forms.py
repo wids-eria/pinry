@@ -12,10 +12,6 @@ class ImageForm(forms.ModelForm):
         field_name = FIELD_NAME_MAPPING.get(field_name, field_name)
         return super(ImageForm, self).add_prefix(field_name)
 
-    def clean(self):
-        from django.core.exceptions import ValidationError
-        raise ValidationError("account already exists")
-
     class Meta:
         model = Image
         fields = ('image',)

@@ -98,16 +98,17 @@ class WhitelistValidation(Validation):
 
     def is_valid(self, bundle, request=None):
         errors = {}
-
         matched = False
-        for match in self.whitelist:
-            url = bundle.data['url']
-            if re.search("({0})(\/|$)".format(match), url):
-                matched = True
-                break;
 
-        if not matched:
-            errors = {"url","Url {0} is not allowed!".format(url)}
+        if 'url' in bundle.data:
+            url = bundle.data['url']
+            for match in self.whitelist:
+                if re.search("({0})(\/|$)".format(match), url):
+                    matched = True
+                    break;
+
+            if not matched:
+                errors = {"url","Url {0} is not allowed!".format(url)}
 
         return errors
 
@@ -152,11 +153,8 @@ class PinResource(ModelResource):
             bundle.obj.tags.set(*tags)
         return super(PinResource, self).save_m2m(bundle)
 
-    def clean(self):
-        raise Unauthorized(self.url)
-
     class Meta:
-        fields = ['id', 'url', 'origin', 'description']
+        fields = ['id', 'url', 'origin', 'description', 'learned']
         ordering = ['id']
         filtering = {
             'submitter': ALL_WITH_RELATIONS
