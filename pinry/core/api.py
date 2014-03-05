@@ -92,8 +92,8 @@ class ImageResource(ModelResource):
 class WhitelistValidation(Validation):
     def __init__(self):
         self.whitelist = [
-            "(adafruit.com)",
-            "(gameslearningsociety.org)"
+            "adafruit.com",
+            "gameslearningsociety.org"
         ]
 
     def is_valid(self, bundle, request=None):
@@ -102,13 +102,12 @@ class WhitelistValidation(Validation):
         matched = False
         for match in self.whitelist:
             url = bundle.data['url']
-            if re.search(match, url):
-                print >>sys.stderr, "Matched"
+            if re.search("({0})(\/|$)".format(match), url):
                 matched = True
                 break;
 
         if not matched:
-            errors = {"url","URL NOT ALLOWED"}
+            errors = {"url","Url {0} is not allowed!".format(url)}
 
         return errors
 
