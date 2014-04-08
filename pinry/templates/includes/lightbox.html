@@ -8,17 +8,15 @@
                 <div class="lightbox-data clearfix">
                 {{#if description}}
                     <div class="description">
-                        {{description}}
+                        Description: {{description}}
                     </div>
                 {{/if}}
                 {{#if learned}}
                     <div class="learned">
-                        {{learned}}
+                        What I learned. {{learned}}
                     </div>
                 {{/if}}
-                    <div class="avatar pull-left">
-                        <img src="http://gravatar.com/avatar/{{submitter.gravatar}}.jpg">
-                    </div>
+                    <div id="footer-wrapper">
                     <div class="text pull-left">
                         <span class="dim">pinned by</span> {{submitter.username}}
                         {{#if tags}}
@@ -31,6 +29,7 @@
                     <div class="text extra pull-right">
                         <a href="{{url}}" class="btn btn-sm btn-default btn-warning">Original URL</a>
                         <a href="/{{id}}/" class="btn btn-sm btn-default btn-success">Pin URL</a>
+                    </div>
                     </div>
                 </div>
             </div>

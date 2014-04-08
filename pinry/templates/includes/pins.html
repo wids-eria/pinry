@@ -17,17 +17,14 @@
                     <img src="{{image.thumbnail.image}}" width="{{image.thumbnail.width}}" height="{{image.thumbnail.height}}"/>
                 </div>
             </a>
-            {{#if description}}
-                <p>{{description}}</p>
-            {{/if}}
-            {{#if learned}}
-                <p>{{learned}}</p>
-            {{/if}}
+
+            <p>{{#if description}}
+                Description: {{description}}
+            {{/if}}</p>
+
             <div class="pin-footer clearfix">
-                <div class="avatar pull-left">
-                    <img src="http://gravatar.com/avatar/{{submitter.gravatar}}">
-                </div>
-                <div class="text pull-right">
+                <div class="text">
+
                     <span class="dim">pinned by</span>
                     <a href="/pins/user/{{submitter.username}}/">{{submitter.username}}</a>
                     {{#if tags}}

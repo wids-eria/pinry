@@ -239,7 +239,8 @@ textarea {
 
 .pin p {
     border-bottom: 1px solid #ddd;
-    font-family: 'Georgia', 'Times', 'Times New Roman', serif;
+    font-family: 'Open Sans', sans-serif;
+
     font-size: 12px;
     margin-bottom: 0;
     padding: 8px;
@@ -250,6 +251,12 @@ textarea {
     font-weight: normal;
 }
 
+ .learned{
+    padding: 8px;
+}
+p:empty{
+    display: none;
+}
 .pin-footer {
     color: #777;
     cursor: default;
@@ -295,7 +302,8 @@ textarea {
 }
 
 #the-end {
-    font-family: 'Georgia', 'Times', 'Times New Roman', serif;
+    font-family: 'Open Sans', sans-serif;
+
     font-size: 1.4em;
     font-style: italic;
     text-align: center;
