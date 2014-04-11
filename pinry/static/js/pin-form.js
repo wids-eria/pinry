@@ -221,25 +221,34 @@ $(window).load(function() {
         editPinId = typeof editPinId !== 'undefined' ? editPinId : null;
         //createPinForm(editPinId);
 
-        var apiUrl = '/ajax';
-        $.post(apiUrl,{ url: "www.adafruit.com"}).done(function(data) {
-            alert(data);
-        });
-
         $('#newpin').popover({
             placement : 'bottom',
             'html':true,
             'content': '<div id="pin-site">Pin from Website</div><div id="pin-upload">Upload image</div>',
             callback: function() {
-
                 $('#pin-site').click(function() {
                     $('#pin-website').modal('show');
                 });
                 $('#pin-upload').click(function() {
                     createPinForm(editPinId);
                 });
-
             }
+        });
+
+        $('#pin-website-submit').click(function(){
+            var pinurl = $('#pin-website-image-url').val();
+            $.post('/validateurl',{ url: pinurl}).done(function(data) {
+                if(data['Valid']){
+                    $('#form-error').text(data['Error']).hide();
+                    $('#pin-website').modal('hide');
+                    $('#pinry-images').show();
+                    pageView();
+                    imageView(pinurl);
+
+                }else{
+                    $('#form-error').text(data['Error']).show();
+                }
+            });
         });
     }
 

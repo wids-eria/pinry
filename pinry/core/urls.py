@@ -34,5 +34,5 @@ urlpatterns = patterns('',
         name='recent-pins'),
     url(r'^$', TemplateView.as_view(template_name='core/pins.html'),
         name='recent-pins'),
-    url(r'^ajax$', 'pinry.core.api.ValidateUrl'),
+    url(r'^validateurl$', 'pinry.core.api.ValidateUrl'),
 )

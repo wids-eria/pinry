@@ -202,6 +202,13 @@ textarea {
     background-color: rgba(214, 214, 214, 0.4);
     cursor:pointer;
 }
+#form-error{
+    width: 100%;
+    padding: 5px;
+    color: red;
+    text-align: center;
+    display: none;
+}
 
 #pin-upload{
     padding: 10px;
