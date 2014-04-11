@@ -1,7 +1,5 @@
-<!DOCTYPE html>
-{% load static from staticfiles %}
-{% load compress %}
-<html lang="en">
+<!DOCTYPE html>{% load static from staticfiles %}
+{% load compress %}<html lang="en">
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
@@ -13,9 +11,7 @@
             <link rel="alternate" type="application/rss+xml" href="/feeds/latest-pins/">
         {% endif %}
 
-
         <title>{% block title %}GLS PinBoard{% endblock %}</title>
-
         <!-- CSS -->
         <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,700"/>
         {% compress css %}
@@ -29,7 +25,6 @@
             {% block extra_css %}{% endblock %}
         {% endcompress %}
         <!-- End CSS -->
-
         <!-- Start JavaScript Variables -->
         <script>
         var apiLimitPerPage = {{ API_LIMIT_PER_PAGE }},
@@ -69,7 +64,7 @@
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_authenticated %}
-                            <li><a onclick="pinForm()">New Pin</a></li>
+                            <li><a id="newpin" onclick="pinForm()">New Pin</a></li>
                             <li><a href="{% url 'users:logout' %}">Logout</a></li>
                             <li>{% include "includes/bookmarklet_link.html" %}</li>
                         {% else %}
@@ -102,6 +97,7 @@
         {% include "includes/lightbox.html" %}
         {% include "includes/pins.html" %}
         {% include "includes/pin_form.html" %}
+        {% include "includes/pin-website.html" %}
         {% block extra_templates %}{% endblock %}
         <!-- End Templates -->
 

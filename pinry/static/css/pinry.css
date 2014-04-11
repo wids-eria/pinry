@@ -177,6 +177,44 @@ textarea {
     top: 80px;
 }
 
+.popover{
+    padding: 0px !important;
+}
+.popover.bottom{
+    margin-top: 12px;
+}
+
+.popover-content{
+    width: 200px;
+    text-align: center;
+    padding: 0px;
+    font-size: 1.1em;
+}
+
+#pin-site{
+    padding: 10px;
+    width: 100%;
+    border-bottom: 1px solid darkgray;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+#pin-site:hover{
+    background-color: rgba(214, 214, 214, 0.4);
+    cursor:pointer;
+}
+
+#pin-upload{
+    padding: 10px;
+    width: 100%;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+#pin-upload:hover{
+    cursor:pointer;
+    background-color: rgba(214, 214, 214, 0.4);
+}
+
 .pin {
     background: #fff;
     -webkit-border-radius: 3px;

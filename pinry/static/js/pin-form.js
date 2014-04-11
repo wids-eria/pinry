@@ -190,19 +190,134 @@ $(window).load(function() {
             if (pinFromUrl) return window.close();
             dismissModal(modal);
         });
+
+        $('#pin-form-website').click(function() {
+
+            //display image grid modal
+           // $('#pin-website').modal('show');
+
+            //$('#pin-form').modal('hide');
+           // $('#pin-website').modal('show');
+
+            //addAllImagesToPageView();
+
+        });
         createPinPreviewFromForm();
     }
-    // End View Functions
+    // End View
 
+
+    //Add callback to popover Object
+    var tmp = $.fn.popover.Constructor.prototype.show;
+    $.fn.popover.Constructor.prototype.show = function () {
+      tmp.call(this);
+      if (this.options.callback) {
+        this.options.callback();
+      }
+    }
 
     // Start Init
     window.pinForm = function(editPinId) {
         editPinId = typeof editPinId !== 'undefined' ? editPinId : null;
-        createPinForm(editPinId);
+        //createPinForm(editPinId);
+
+        var apiUrl = '/ajax';
+        $.post(apiUrl,{ url: "www.adafruit.com"}).done(function(data) {
+            alert(data);
+        });
+
+        $('#newpin').popover({
+            placement : 'bottom',
+            'html':true,
+            'content': '<div id="pin-site">Pin from Website</div><div id="pin-upload">Upload image</div>',
+            callback: function() {
+
+                $('#pin-site').click(function() {
+                    $('#pin-website').modal('show');
+                });
+                $('#pin-upload').click(function() {
+                    createPinForm(editPinId);
+                });
+
+            }
+        });
     }
 
     if (getUrlParameter('pin-image-url')) {
         createPinForm();
     }
     // End Init
+
+    //Begin Grid image select
+    function pageView() {
+        var pinryImages = document.createElement('div');
+        pinryImages.id = 'pinry-images';
+        $(pinryImages).css({
+            'position': 'absolute',
+            'z-index': '9001',
+            'background': 'rgba(0, 0, 0, 0.7)',
+            'padding-top': '70px',
+            'top': '0',
+            'left': '0',
+            'right': '0',
+            'height': $(document).height(),
+            'text-align': 'center',
+            'width': '100%'
+        });
+        var pinryBar = document.createElement('div');
+        pinryBar.id = 'pinry-bar';
+        $(pinryBar).css({
+            'background': 'black',
+            'padding': '15px',
+            'position': 'absolute',
+            'z-index': '9002',
+            'width': '100%',
+            'top': 0,
+            'border-bottom': '1px solid #555',
+            'color': 'white',
+            'text-align': 'center',
+            'font-size': '22px'
+        });
+        $('body').append(pinryImages);
+        $('#pinry-images').append(pinryBar);
+        $('#pinry-bar').html('Pin Images');
+        $(window).scrollTop(0);
+    }
+
+    function imageView(imageUrl) {
+        // Requires that pageView has been created already
+        imageUrl = normalizeImageUrl(imageUrl);
+        var image = document.createElement('div');
+        $(image).css({
+            'background-image': 'url('+imageUrl+')',
+            'background-position': 'center center',
+            'background-repeat': 'no-repeat',
+            'display': 'inline-block',
+            'width': '200px',
+            'height': '200px',
+            'margin': '15px',
+            'cursor': 'pointer',
+            'border': '1px solid #555'
+        });
+        $(image).click(function() {
+            var popUrl = getFormUrl()+imageUrl;
+            window.open(popUrl);
+            $('#pinry-images').remove();
+        });
+        return $('#pinry-images').append(image);
+    }
+    // End View Functions
+
+
+    // Start Active Functions
+    function addAllImagesToPageView() {
+        var images = $('body').find('img');
+        images.each(function() {
+            if ($(this).width() > 200 && $(this).height() > 200)
+                imageView($(this).attr('src'));
+        });
+        return images;
+    }
+
+
 });

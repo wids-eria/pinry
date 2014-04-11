@@ -7,7 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'', include('pinry.core.urls', namespace='core')),
     url(r'', include('pinry.users.urls', namespace='users')),
-    url(r'^admin/', include(admin.site.urls))
+    url(r'^admin/', include(admin.site.urls)),
 )
 
 

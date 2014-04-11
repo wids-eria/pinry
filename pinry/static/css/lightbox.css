@@ -62,17 +62,14 @@
        -moz-border-radius: 2px;
             border-radius: 2px;
 }
-
 .lightbox-data .text {
     margin-top: 3px;
     padding: 8px;
 }
-
 .lightbox-data #footer-wrapper{
     width: 100%;
     border-top: 1px solid gray;
 }
-
 .lightbox-data .text .dim {
     color: #999;
     font-size: 14px;

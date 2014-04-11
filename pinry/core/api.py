@@ -5,7 +5,8 @@ from tastypie.exceptions import Unauthorized
 from tastypie.resources import ModelResource
 from tastypie.validation import Validation
 from django_images.models import Thumbnail
-
+from django.http import HttpResponseRedirect, HttpResponse
+import json
 from .models import Pin, Image, WhiteListDomain
 from ..users.models import User
 import sys,re
@@ -91,20 +92,36 @@ class ImageResource(ModelResource):
 class WhitelistValidation(Validation):
     def is_valid(self, bundle, request=None):
         errors = {}
-        matched = False
 
         if 'url' in bundle.data:
             url = bundle.data['url']
-            for match in WhiteListDomain.objects.all():
-                match = match.url
-                if re.search("({0})(\/|$)".format(match), url):
-                    matched = True
-                    break;
-
-            if not matched:
+            if not self.check_domains(url):
                 errors = {"url","Url {0} is not allowed!".format(url)}
-
         return errors
+
+    def check_domains(self,url):
+        matched = False
+        for match in WhiteListDomain.objects.all():
+            match = match.url
+            if re.search("({0})(\/|$)".format(match), url):
+                matched = True
+                break;
+        return matched
+
+def ValidateUrl(request):
+    validator = WhitelistValidation()
+    url = request.POST.dict()['url']
+    valid = validator.check_domains(url)
+
+    data = {}
+    data['Valid'] = valid
+
+    if not valid:
+        data['Error'] = 'Url {0} is not allowed!'.format(url)
+
+    return HttpResponse(json.dumps(data),content_type = "application/json")
+
+
 
 class PinResource(ModelResource):
     submitter = fields.ToOneField(UserResource, 'submitter', full=True)
