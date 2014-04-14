@@ -1,15 +1,3 @@
-/**
- * Lightbox for Pinry
- * Descrip: A lightbox plugin for pinry so that I don't have to rely on some of
- *          the massive code bases of other lightboxes, this one uses data
- *          fields to acquire the info we need and dynamically loads comments.
- *          It also has a nice parallax view mode where the top scrolls and the
- *          background stays stationary.
- * Authors: Pinry Contributors
- * Updated: Feb 26th, 2013
- * Require: jQuery, Pinry JavaScript Helpers
- */
-
 
 $(window).load(function() {
     // Start Helper Functions

@@ -362,7 +362,10 @@ p:empty{
     width: 80%;
 }
 
-#pin-images{
-    width:10)%;
+#pin-images img{
+    display: inline-block;
+    margin: 15px;
+    cursor: pointer;
+    border: 1px solid #555;
 }
 /* End Pins */

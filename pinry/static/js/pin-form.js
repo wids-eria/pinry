@@ -25,14 +25,14 @@ $(window).load(function() {
 
     function createPinPreviewFromForm() {
         var context = {pins: [{
-                submitter: currentUser,
-                image: {thumbnail: {image: $('#pin-form-image-url').val()}},
-                description: $('#pin-form-description').val(),
-                learned: $('#pin-form-learned').val(),
-                tags: cleanTags($('#pin-form-tags').val())
-            }]},
-            html = renderTemplate('#pins-template', context),
-            preview = $('#pin-form-image-preview');
+            submitter: currentUser,
+            image: {thumbnail: {image: $('#pin-form-image-url').val()}},
+            description: $('#pin-form-description').val(),
+            learned: $('#pin-form-learned').val(),
+            tags: cleanTags($('#pin-form-tags').val())
+        }]},
+        html = renderTemplate('#pins-template', context),
+        preview = $('#pin-form-image-preview');
         preview.html(html);
         preview.find('.pin').width(240);
         preview.find('.pin').fadeIn(300);
@@ -75,7 +75,7 @@ $(window).load(function() {
                 $('#pin-form-description').val(editedPin.description);
                 $('#pin-form-learned').val(editedPin.learned);
                 $('#pin-form-tags').val(editedPin.tags);
-                createPinPreviewFromForm();
+                //createPinPreviewFromForm();
             });
         }
         modal.modal('show');
@@ -117,16 +117,6 @@ $(window).load(function() {
                 message('Problem uploading image.', 'alert alert-error');
             });
         });
-        // If bookmarklet submit
-        if (pinFromUrl) {
-            $('#pin-form-image-upload').parent().css('display', 'none');
-            $('#pin-form-image-url').val(pinFromUrl);
-            $('.navbar').css('display', 'none');
-            modal.css({
-                'margin-top': -35,
-                'margin-left': -281
-            });
-        }
         // Submit pin on post click
         $('#pin-form-submit').click(function(e) {
             e.preventDefault();
@@ -157,6 +147,8 @@ $(window).load(function() {
                     lightbox();
                     dismissModal(modal);
                     editedPin = null;
+
+                    $('#pin-board-images').modal('hide');
                 });
                 promise.error(function() {
                     message('Problem updating image.', 'alert alert-error');
@@ -178,8 +170,10 @@ $(window).load(function() {
                     $('#pins').prepend(pin);
                     tileLayout();
                     lightbox();
-                    dismissModal(modal);
+                  //  dismissModal(modal);
                     uploadedImage = false;
+                    $('#pin-board-images').modal('hide');
+                    $('#pin-form').modal('hide');
                 });
                 promise.error(function() {
                     message('Problem saving image.', 'alert alert-error');
@@ -202,7 +196,7 @@ $(window).load(function() {
             //addAllImagesToPageView();
 
         });
-        createPinPreviewFromForm();
+        //createPinPreviewFromForm();
     }
     // End View
 
@@ -228,9 +222,12 @@ $(window).load(function() {
             callback: function() {
                 $('#pin-site').click(function() {
                     $('#pin-website').modal('show');
+                    $('#newpin').popover('hide');
                 });
                 $('#pin-upload').click(function() {
-                    createPinForm(editPinId);
+                    $('#newpin').popover('hide');
+                    createPinForm();
+                    createPinPreviewFromForm();
                 });
             }
         });
@@ -246,26 +243,17 @@ $(window).load(function() {
                     data['urls'].forEach(function(imageUrl) {
                         var image = document.createElement('img');
                         $(image).attr("src",imageUrl);
-                        $(image).css({
-                            'background-position': 'center center',
-                            'background-repeat': 'no-repeat',
-                            'display': 'inline-block',
-                            'width': '200px',
-                            'height': '200px',
-                            'margin': '15px',
-                            'cursor': 'pointer',
-                            'border': '1px solid #555'
-                        });
-
                         $('#pin-images').append(image);
                     });
 
                     $('#pin-board-images').modal('show');
-
-
                     $('#pin-images img').click(function(){
-                        createPinForm(editPinId);
+                        if($("#pin-form").length <= 0){
+                            createPinForm(editPinId);
+                        }
+
                         $('#pin-form-image-url').val($(this).attr("src"));
+                        createPinPreviewFromForm();
                        //add site url pinurl
                     });
 
