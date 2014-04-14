@@ -353,4 +353,16 @@ p:empty{
     font-style: italic;
     text-align: center;
 }
+
+#pin-board-images .modal-title{
+    text-align: center;
+}
+
+#pin-board-images .modal-dialog{
+    width: 80%;
+}
+
+#pin-images{
+    width:10)%;
+}
 /* End Pins */

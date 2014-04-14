@@ -9,7 +9,9 @@ from django.http import HttpResponseRedirect, HttpResponse
 import json
 from .models import Pin, Image, WhiteListDomain
 from ..users.models import User
-import sys,re
+import sys,re,urllib2
+from bs4 import BeautifulSoup
+
 
 class PinryAuthorization(DjangoAuthorization):
     """
@@ -118,6 +120,20 @@ def ValidateUrl(request):
 
     if not valid:
         data['Error'] = 'Url {0} is not allowed!'.format(url)
+
+    if not url.startswith("http"):
+        url = "http://" + url
+
+    response = urllib2.urlopen(url).read()
+    soup = BeautifulSoup(response)
+   # tag = soup.b
+    #print type(tag)
+    images = []
+    for img in soup.find_all('img'):
+        url = img.get('src')
+        if url.startswith("http"):
+            images.append(url)
+    data['urls'] = images
 
     return HttpResponse(json.dumps(data),content_type = "application/json")
 
