@@ -368,4 +368,8 @@ p:empty{
     cursor: pointer;
     border: 1px solid #555;
 }
+
+.modal{
+    overflow-y: auto !important;
+}
 /* End Pins */

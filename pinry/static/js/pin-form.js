@@ -75,8 +75,12 @@ $(window).load(function() {
                 $('#pin-form-description').val(editedPin.description);
                 $('#pin-form-learned').val(editedPin.learned);
                 $('#pin-form-tags').val(editedPin.tags);
-                //createPinPreviewFromForm();
+
+                $('#pin-title').text("Editing Pin");
+                createPinPreviewFromForm();
             });
+        }else{
+            $('#pin-title').text("New Pin");
         }
         modal.modal('show');
         // Auto update preview on field changes
@@ -184,22 +188,7 @@ $(window).load(function() {
             if (pinFromUrl) return window.close();
             dismissModal(modal);
         });
-
-        $('#pin-form-website').click(function() {
-
-            //display image grid modal
-           // $('#pin-website').modal('show');
-
-            //$('#pin-form').modal('hide');
-           // $('#pin-website').modal('show');
-
-            //addAllImagesToPageView();
-
-        });
-        //createPinPreviewFromForm();
     }
-    // End View
-
 
     //Add callback to popover Object
     var tmp = $.fn.popover.Constructor.prototype.show;
@@ -213,7 +202,9 @@ $(window).load(function() {
     // Start Init
     window.pinForm = function(editPinId) {
         editPinId = typeof editPinId !== 'undefined' ? editPinId : null;
-        //createPinForm(editPinId);
+        if(editPinId != null) {
+            createPinForm(editPinId);
+        }
 
         $('#newpin').popover({
             placement : 'bottom',
