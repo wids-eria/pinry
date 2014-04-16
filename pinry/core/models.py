@@ -37,6 +37,7 @@ class Image(BaseImage):
 class Pin(models.Model):
     submitter = models.ForeignKey(User)
     url = models.URLField(null=True)
+    siteurl = models.URLField(null=True)
     origin = models.URLField(null=True)
     description = models.TextField(blank=True, null=True)
     learned = models.TextField(blank=True, null=True)
