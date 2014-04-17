@@ -228,10 +228,10 @@ $(window).load(function() {
             var pinurl = $('#pin-website-image-url').val();
             $('.loader-wrapper').css('display', 'block');
             $.post('/validateurl',{ url: pinurl}).done(function(data) {
+                $('#pin-images').html("");
                 if(data['Valid']){
-                    $('#form-error').text(data['Error']).hide();
+                    $('#form-error').hide();
                     $('#pin-website').modal('hide');
-                    $('#pin-images').html("");
 
                     data['urls'].forEach(function(imageUrl) {
                         var image = document.createElement('img');
@@ -243,10 +243,13 @@ $(window).load(function() {
                     $('#pin-images img').click(function(){
                         if($("#pin-form").length <= 0){
                             createPinForm(editPinId);
+                        }else{
+                            createPinForm();
                         }
 
                         $('#pin-form-image-url').val($(this).attr("src"));
                         createPinPreviewFromForm();
+                        $('#pin-form').modal('show');
                     });
                 }else{
                     $('#form-error').text(data['Error']).show();

@@ -100,11 +100,6 @@ $(window).load(function() {
         if(windowPosition > bottom) loadPins();
     }
 
-
-    function loadSpinner(){
-        $('.loader-wrapper').css('display', 'block');
-    }
-
     function loadPins() {
         // Disable scroll
         $(window).off('scroll');
