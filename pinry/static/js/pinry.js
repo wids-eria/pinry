@@ -100,10 +100,11 @@ $(window).load(function() {
         if(windowPosition > bottom) loadPins();
     }
 
-    /**
-     * Load our pins using the pins template into our UI, be sure to define a
-     * offset outside the function to keep a running tally of your location.
-     */
+
+    function loadSpinner(){
+        $('.loader-wrapper').css('display', 'block');
+    }
+
     function loadPins() {
         // Disable scroll
         $(window).off('scroll');

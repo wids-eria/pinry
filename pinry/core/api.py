@@ -112,6 +112,7 @@ class WhitelistValidation(Validation):
 
 def ValidateUrl(request):
     validator = WhitelistValidation()
+    print request
     url = request.POST.dict()['url']
     valid = validator.check_domains(url)
 
@@ -120,6 +121,7 @@ def ValidateUrl(request):
 
     if not valid:
         data['Error'] = 'Url {0} is not allowed!'.format(url)
+        return HttpResponse(json.dumps(data),content_type = "application/json")
 
     if not url.startswith("http"):
         url = "http://" + url

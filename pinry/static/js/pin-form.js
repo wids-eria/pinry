@@ -123,6 +123,7 @@ $(window).load(function() {
         });
         // Submit pin on post click
         $('#pin-form-submit').click(function(e) {
+
             e.preventDefault();
             $(this).off('click');
             $(this).addClass('disabled');
@@ -225,6 +226,7 @@ $(window).load(function() {
 
         $('#pin-website-submit').click(function(){
             var pinurl = $('#pin-website-image-url').val();
+            $('.loader-wrapper').css('display', 'block');
             $.post('/validateurl',{ url: pinurl}).done(function(data) {
                 if(data['Valid']){
                     $('#form-error').text(data['Error']).hide();
@@ -245,13 +247,12 @@ $(window).load(function() {
 
                         $('#pin-form-image-url').val($(this).attr("src"));
                         createPinPreviewFromForm();
-                       //add site url pinurl
                     });
-
-
                 }else{
                     $('#form-error').text(data['Error']).show();
                 }
+            }).always(function(){
+                $('.loader-wrapper').css('display', 'none');
             });
         });
     }
