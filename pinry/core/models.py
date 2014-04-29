@@ -45,6 +45,11 @@ class Pin(models.Model):
     published = models.DateTimeField(auto_now_add=True)
     tags = TaggableManager()
 
+    def is_valid(self):
+        raise ValidationError('Not Valid')
+        #run whatever ModelForm validations you need
+        return super(Pin, self).is_valid()
+
     def __unicode__(self):
         return self.url
 

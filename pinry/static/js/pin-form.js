@@ -81,6 +81,9 @@ $(window).load(function() {
             });
         }else{
             $('#pin-title').text("New Pin");
+            $('#pin-form-description').val("");
+            $('#pin-form-learned').val("");
+            $('#pin-form-tags').val("");
         }
         modal.modal('show');
         // Auto update preview on field changes
@@ -123,16 +126,25 @@ $(window).load(function() {
         });
         // Submit pin on post click
         $('#pin-form-submit').click(function(e) {
+            var siteurl = $('#pin-website-image-url').val();
+            $('#pin-form-site-url').val(siteurl);
 
             e.preventDefault();
             $(this).off('click');
             $(this).addClass('disabled');
+
+            var siteurl = $('#pin-website-image-url').val();
+            var imageurl = $('#pin-form-image-url').val();
+
             if (editedPin) {
                 var apiUrl = '/api/v1/pin/'+editedPin.id+'/?format=json';
+
                 var data = {
                     description: $('#pin-form-description').val(),
                     learned: $('#pin-form-learned').val(),
-                    tags: cleanTags($('#pin-form-tags').val())
+                    tags: cleanTags($('#pin-form-tags').val()),
+                    site: $('#pin-website-image-url').val(),
+                    url: $('#pin-form-image-url').val()
                 }
                 var promise = $.ajax({
                     type: "put",
@@ -154,16 +166,25 @@ $(window).load(function() {
                     editedPin = null;
 
                     $('#pin-board-images').modal('hide');
+                    $('.loader-wrapper').modal('hide');
                 });
                 promise.error(function() {
                     message('Problem updating image.', 'alert alert-error');
+                    $('#pin-board-images').modal('hide');
+                });
+
+                promise.always(function(){
+                    $('#pin-board-images').modal('hide');
+                    $('#pin-form').modal('hide');
                 });
             } else {
                 var data = {
                     submitter: '/api/v1/user/'+currentUser.id+'/',
                     description: $('#pin-form-description').val(),
                     learned: $('#pin-form-learned').val(),
-                    tags: cleanTags($('#pin-form-tags').val())
+                    tags: cleanTags($('#pin-form-tags').val()),
+                    url: $('#pin-form-website-url').val(),
+                    site: $('#pin-form-image-url').val()
                 };
                 if (uploadedImage) data.image = '/api/v1/image/'+uploadedImage+'/';
                 else data.url = $('#pin-form-image-url').val();
@@ -183,7 +204,14 @@ $(window).load(function() {
                 promise.error(function() {
                     message('Problem saving image.', 'alert alert-error');
                 });
+
+                promise.always(function(){
+                    $('#pin-board-images').modal('hide');
+                    $('#pin-form').modal('hide');
+                });
             }
+
+            $(this).removeClass('disabled');
         });
         $('#pin-form-close').click(function() {
             if (pinFromUrl) return window.close();
@@ -203,7 +231,7 @@ $(window).load(function() {
     // Start Init
     window.pinForm = function(editPinId) {
         editPinId = typeof editPinId !== 'undefined' ? editPinId : null;
-        if(editPinId != null) {
+        if(editPinId !== null) {
             createPinForm(editPinId);
         }
 
@@ -218,6 +246,7 @@ $(window).load(function() {
                 });
                 $('#pin-upload').click(function() {
                     $('#newpin').popover('hide');
+                    $('#pin-form-image-url').val('');
                     createPinForm();
                     createPinPreviewFromForm();
                 });
@@ -247,7 +276,10 @@ $(window).load(function() {
                             createPinForm();
                         }
 
+                        var siteurl = $('#pin-website-image-url').val();
+                        $('#pin-form-site-url').val(siteurl);
                         $('#pin-form-image-url').val($(this).attr("src"));
+
                         createPinPreviewFromForm();
                         $('#pin-form').modal('show');
                     });

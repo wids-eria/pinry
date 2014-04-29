@@ -53,7 +53,6 @@ $(window).load(function() {
             var thisPin = $(this);
             $(this).off('click');
             $(this).click(function() {
-                $(this).off('click');
                 pinForm($(this).data('id'));
             });
         });

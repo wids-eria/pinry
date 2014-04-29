@@ -95,27 +95,53 @@ class WhitelistValidation(Validation):
     def is_valid(self, bundle, request=None):
         errors = {}
 
-        if 'url' in bundle.data:
+        if request.META["REQUEST_METHOD"] != "PUT":
             url = bundle.data['url']
             if not self.check_domains(url):
                 errors = {"url","Url {0} is not allowed!".format(url)}
+
+            site = bundle.data['site']
+            if self.check_domains(site):
+                errors = {"site","Site {0} is not allowed!".format(site)}
+
         return errors
 
+    def prep_url(self,url):
+        if not url.startswith("http"):
+            url = "http://" + url
+        temp = re.search("((?<=http://)|(?<=https://))(?!www){1}.*",url)
+
+        if temp == None:\
+            url = re.search("(?<=\.).*",url)
+        else:
+            url = temp
+
+        if url == None:
+            return None
+        return url.group(0)
+
     def check_domains(self,url):
-        matched = False
-        for match in WhiteListDomain.objects.all():
-            match = match.url
-            if re.search("({0})(\/|$)".format(match), url):
-                matched = True
-                break;
-        return matched
+        url = self.prep_url(url)
+
+        if url != None:
+            matched = False
+            for match in WhiteListDomain.objects.all():
+                match = self.prep_url(match.url)
+
+                if match != None and re.search("({0})(\/|$)".format(match), url):
+                    matched = True
+                    break;
+            return matched
+        return False
 
 def ValidateUrl(request):
     validator = WhitelistValidation()
     print request
     url = request.POST.dict()['url']
-    valid = validator.check_domains(url)
+    if not url.startswith("http"):
+        url = "http://" + url
 
+    valid = validator.check_domains(url)
     data = {}
     data['Valid'] = valid
 
@@ -123,13 +149,9 @@ def ValidateUrl(request):
         data['Error'] = 'Url {0} is not allowed!'.format(url)
         return HttpResponse(json.dumps(data),content_type = "application/json")
 
-    if not url.startswith("http"):
-        url = "http://" + url
-
     response = urllib2.urlopen(url).read()
     soup = BeautifulSoup(response)
-   # tag = soup.b
-    #print type(tag)
+
     images = []
     for img in soup.find_all('img'):
         url = img.get('src')
@@ -139,16 +161,15 @@ def ValidateUrl(request):
 
     return HttpResponse(json.dumps(data),content_type = "application/json")
 
-
-
 class PinResource(ModelResource):
     submitter = fields.ToOneField(UserResource, 'submitter', full=True)
     image = fields.ToOneField(ImageResource, 'image', full=True)
     tags = fields.ListField()
 
     def hydrate_image(self, bundle):
+        print bundle
         url = bundle.data.get('url', None)
-        if url:
+        if not url.startswith("/"):
             image = Image.objects.create_for_url(url)
             bundle.data['image'] = '/api/v1/image/{}/'.format(image.pk)
         return bundle
@@ -193,5 +214,4 @@ class PinResource(ModelResource):
         include_resource_uri = False
         always_return_data = True
         authorization = PinryAuthorization()
-
         validation = WhitelistValidation()
