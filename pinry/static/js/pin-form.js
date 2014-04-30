@@ -186,8 +186,12 @@ $(window).load(function() {
                     url: $('#pin-form-website-url').val(),
                     site: $('#pin-form-image-url').val()
                 };
-                if (uploadedImage) data.image = '/api/v1/image/'+uploadedImage+'/';
-                else data.url = $('#pin-form-image-url').val();
+                if (uploadedImage){
+                    data.image = '/api/v1/image/'+uploadedImage+'/';
+                    data.url = $('#pin-form-image-url').val();
+                }else{
+                    data.url = $('#pin-form-image-url').val();
+                }
                 var promise = postPinData(data);
                 promise.success(function(pin) {
                     if (pinFromUrl) return window.close();

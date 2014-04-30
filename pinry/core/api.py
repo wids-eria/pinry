@@ -95,14 +95,16 @@ class WhitelistValidation(Validation):
     def is_valid(self, bundle, request=None):
         errors = {}
 
-        if request.META["REQUEST_METHOD"] != "PUT":
+        #Only do validation feedback when the pin is being created from a url and not uploaded
+        if request.META["REQUEST_METHOD"] == "POST":
             url = bundle.data['url']
-            if not self.check_domains(url):
-                errors = {"url","Url {0} is not allowed!".format(url)}
+            if not url.startswith("/media"):
+                if not self.check_domains(url):
+                    errors = {"url","Url {0} is not allowed!".format(url)}
 
-            site = bundle.data['site']
-            if self.check_domains(site):
-                errors = {"site","Site {0} is not allowed!".format(site)}
+                site = bundle.data['site']
+                if self.check_domains(site):
+                    errors = {"site","Site {0} is not allowed!".format(site)}
 
         return errors
 
@@ -136,7 +138,6 @@ class WhitelistValidation(Validation):
 
 def ValidateUrl(request):
     validator = WhitelistValidation()
-    print request
     url = request.POST.dict()['url']
     if not url.startswith("http"):
         url = "http://" + url
@@ -167,9 +168,8 @@ class PinResource(ModelResource):
     tags = fields.ListField()
 
     def hydrate_image(self, bundle):
-        print bundle
         url = bundle.data.get('url', None)
-        if not url.startswith("/"):
+        if url and not url.startswith("/"):
             image = Image.objects.create_for_url(url)
             bundle.data['image'] = '/api/v1/image/{}/'.format(image.pk)
         return bundle
