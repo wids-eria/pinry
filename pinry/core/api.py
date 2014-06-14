@@ -104,7 +104,8 @@ class WhitelistValidation(Validation):
 
                 site = bundle.data['site']
                 if self.check_domains(site):
-                    errors = {"site","Site {0} is not allowed!".format(site)}
+                   # errors = {"site","Site {0} is not allowed!".format(site)}
+                   pass
 
         return errors
 
