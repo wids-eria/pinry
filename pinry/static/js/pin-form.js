@@ -84,7 +84,14 @@ $(window).load(function() {
             $('#pin-form-description').val("");
             $('#pin-form-learned').val("");
             $('#pin-form-tags').val("");
+
+            setTimeout(function () {
+                if($("#pin-form-image-preview").find("#form-image").attr("src") != ""){
+                    $('#pin-form-image-upload').parent().hide();
+                }
+            }, 100);
         }
+
         modal.modal('show');
         // Auto update preview on field changes
         var timer;
@@ -247,6 +254,10 @@ $(window).load(function() {
                 $('#pin-site').click(function() {
                     $('#pin-website').modal('show');
                     $('#newpin').popover('hide');
+
+                    $('#pin-form-image-upload').parent().delay(1000).fadeOut(30);
+                    $('#pin-form-image-upload').parent().delay(1000).hide();
+                    $('#pin-form-image-upload').delay(1000).hide()
                 });
                 $('#pin-upload').click(function() {
                     $('#newpin').popover('hide');
