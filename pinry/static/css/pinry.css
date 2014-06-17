@@ -27,6 +27,12 @@ a {
     cursor: pointer;
 }
 
+.error{
+    color:red;
+    text-align: center;
+    font-size: 10pt;
+}
+
 #noscript {
     font-size: 18px;
     line-height: 24px;
