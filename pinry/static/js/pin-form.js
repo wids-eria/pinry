@@ -43,9 +43,9 @@ $(window).load(function() {
             if (preview.find('.pin').height() > 305) {
                 $('#pin-form .modal-body').animate({
                     'height': preview.find('.pin').height()+25
-                }, 300);
+                }, 100);
             }
-        }, 300);
+        }, 100);
     }
 
     function dismissModal(modal) {
@@ -151,6 +151,7 @@ $(window).load(function() {
                     learned: $('#pin-form-learned').val(),
                     tags: cleanTags($('#pin-form-tags').val()),
                     site: $('#pin-website-image-url').val(),
+                    siteurl: $('#pin-website-site-url').val(),
                     url: $('#pin-form-image-url').val()
                 }
                 var promise = $.ajax({
@@ -191,6 +192,7 @@ $(window).load(function() {
                     learned: $('#pin-form-learned').val(),
                     tags: cleanTags($('#pin-form-tags').val()),
                     url: $('#pin-form-website-url').val(),
+                    siteurl: $('#pin-form-site-url').val(),
                     site: $('#pin-form-image-url').val()
                 };
                 if (uploadedImage){

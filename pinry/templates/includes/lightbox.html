@@ -27,7 +27,10 @@
                         {{/if}}
                     </div>
                     <div class="text extra pull-right">
-                        <a href="{{url}}" class="btn btn-sm btn-default btn-warning">Original URL</a>
+                        {{#if siteurl}}
+
+                            <a href="http://{{siteurl}}" class="btn btn-sm btn-default btn-warning">Original URL</a>
+                        {{/if}}
                         <a href="/{{id}}/" class="btn btn-sm btn-default btn-success">Pin URL</a>
                     </div>
                     </div>

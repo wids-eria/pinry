@@ -205,7 +205,7 @@ class PinResource(ModelResource):
         return super(PinResource, self).save_m2m(bundle)
 
     class Meta:
-        fields = ['id', 'url', 'origin', 'description', 'learned']
+        fields = ['id', 'url', 'siteurl','origin', 'description', 'learned']
         ordering = ['id']
         filtering = {
             'submitter': ALL_WITH_RELATIONS
