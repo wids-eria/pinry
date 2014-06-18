@@ -170,6 +170,7 @@ $(window).load(function() {
                 promise.always(function(){
                     $('#pin-board-images').modal('hide');
                     $('#pin-form').modal('hide');
+                    $('.modal').modal('hide');
                 });
             } else {
                 var data = {
@@ -195,7 +196,7 @@ $(window).load(function() {
                     $('#pins').prepend(pin);
                     tileLayout();
                     lightbox();
-                    dismissModal(modal);
+                    //dismissModal(modal);
                     uploadedImage = false;
                     $('#pin-board-images').modal('hide');
                     $('#pin-form').modal('hide');
@@ -207,6 +208,7 @@ $(window).load(function() {
                 promise.always(function(){
                     $('#pin-board-images').modal('hide');
                     $('#pin-form').modal('hide');
+                    $('.modal').modal('hide');
                 });
             }
 
