@@ -16,6 +16,7 @@ class UserCreationForm(forms.ModelForm):
         regex=r'^[\w-]+$')
     password = forms.CharField(label=_("Password"),
         widget=forms.PasswordInput)
+    email = forms.CharField(label=_("Email (optional)"), max_length=60)
 
     class Meta:
         model = User
