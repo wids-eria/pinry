@@ -1,18 +1,7 @@
-/**
- * Pin Form for Pinry
- * Descrip: This is for creation new pins on everything, the bookmarklet, on the
- *          site and even editing pins in some limited situations.
- * Authors: Pinry Contributors
- * Updated: March 3rd, 2013
- * Require: jQuery, Pinry JavaScript Helpers
- */
-
-
 $(window).load(function() {
     var uploadedImage = false;
     var editedPin = null;
 
-    // Start Helper Functions
     function getFormData() {
         return {
             submitter: currentUser,
@@ -54,10 +43,7 @@ $(window).load(function() {
             modal.remove();
         }, 200);
     }
-    // End Helper Functions
 
-
-    // Start View Functions
     function createPinForm(editPinId) {
         $('body').append(renderTemplate('#pin-form-template', ''));
         var modal = $('#pin-form'),
@@ -209,7 +195,7 @@ $(window).load(function() {
                     $('#pins').prepend(pin);
                     tileLayout();
                     lightbox();
-                  //  dismissModal(modal);
+                    dismissModal(modal);
                     uploadedImage = false;
                     $('#pin-board-images').modal('hide');
                     $('#pin-form').modal('hide');
@@ -232,7 +218,6 @@ $(window).load(function() {
         });
     }
 
-    //Add callback to popover Object
     var tmp = $.fn.popover.Constructor.prototype.show;
     $.fn.popover.Constructor.prototype.show = function () {
       tmp.call(this);
@@ -241,7 +226,6 @@ $(window).load(function() {
       }
     }
 
-    // Start Init
     window.pinForm = function(editPinId) {
         editPinId = typeof editPinId !== 'undefined' ? editPinId : null;
         if(editPinId !== null) {
@@ -312,6 +296,6 @@ $(window).load(function() {
     if (getUrlParameter('pin-image-url')) {
         createPinForm();
     }
-    // End Ini
+
 
 });

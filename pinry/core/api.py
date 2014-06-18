@@ -114,7 +114,7 @@ class WhitelistValidation(Validation):
             url = "http://" + url
         temp = re.search("((?<=http://)|(?<=https://))(?!www){1}.*",url)
 
-        if temp == None:\
+        if temp == None:
             url = re.search("(?<=\.).*",url)
         else:
             url = temp
