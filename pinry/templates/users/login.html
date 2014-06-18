@@ -13,6 +13,14 @@
                     {% for field in form %}
                         {% include "includes/field.html" %}
                     {% endfor %}
+
+                    {% if form.errors %}
+
+                        {% for error in form.non_field_errors %}
+                            <p class="error"> {{error}}</p>
+                        {% endfor %}
+
+                    {% endif %}
                     <button type="submit" class="btn btn-primary btn-lg" id="submit">Login</button>
                 </form>
             </div>

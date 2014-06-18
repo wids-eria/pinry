@@ -10,7 +10,7 @@
 $(window).load(function() {
     /**
      * tileLayout will simply tile/retile the block/pin container when run. This
-     * was put into a function in order to adjust frequently on screen size 
+     * was put into a function in order to adjust frequently on screen size
      * changes.
      */
     window.tileLayout = function() {
@@ -53,7 +53,6 @@ $(window).load(function() {
             var thisPin = $(this);
             $(this).off('click');
             $(this).click(function() {
-                $(this).off('click');
                 pinForm($(this).data('id'));
             });
         });
@@ -100,10 +99,6 @@ $(window).load(function() {
         if(windowPosition > bottom) loadPins();
     }
 
-    /**
-     * Load our pins using the pins template into our UI, be sure to define a
-     * offset outside the function to keep a running tally of your location.
-     */
     function loadPins() {
         // Disable scroll
         $(window).off('scroll');
@@ -117,7 +112,7 @@ $(window).load(function() {
         if (userFilter) apiUrl = apiUrl + '&submitter__username=' + userFilter;
         $.get(apiUrl, function(pins) {
             // Set which items are editable by the current user
-            for (var i=0; i < pins.objects.length; i++) 
+            for (var i=0; i < pins.objects.length; i++)
                 pins.objects[i].editable = (pins.objects[i].submitter.username == currentUser.username);
 
             // Use the fetched pins as our context for our pins template
@@ -141,7 +136,7 @@ $(window).load(function() {
                 if ($('#pins').length != 0) {
                     var theEnd = document.createElement('div');
                     theEnd.id = 'the-end';
-                    $(theEnd).html('&mdash; End &mdash;');
+                    $(theEnd).html('');
                     $(theEnd).css('padding', 50);
                     $('body').append(theEnd);
                 }

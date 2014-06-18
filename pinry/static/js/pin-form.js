@@ -1,36 +1,27 @@
-/**
- * Pin Form for Pinry
- * Descrip: This is for creation new pins on everything, the bookmarklet, on the
- *          site and even editing pins in some limited situations.
- * Authors: Pinry Contributors
- * Updated: March 3rd, 2013
- * Require: jQuery, Pinry JavaScript Helpers
- */
-
-
 $(window).load(function() {
     var uploadedImage = false;
     var editedPin = null;
 
-    // Start Helper Functions
     function getFormData() {
         return {
             submitter: currentUser,
             url: $('#pin-form-image-url').val(),
             description: $('#pin-form-description').val(),
+            learned: $('#pin-form-learned').val(),
             tags: cleanTags($('#pin-form-tags').val())
         }
     }
 
     function createPinPreviewFromForm() {
         var context = {pins: [{
-                submitter: currentUser,
-                image: {thumbnail: {image: $('#pin-form-image-url').val()}},
-                description: $('#pin-form-description').val(),
-                tags: cleanTags($('#pin-form-tags').val())
-            }]},
-            html = renderTemplate('#pins-template', context),
-            preview = $('#pin-form-image-preview');
+            submitter: currentUser,
+            image: {thumbnail: {image: $('#pin-form-image-url').val()}},
+            description: $('#pin-form-description').val(),
+            learned: $('#pin-form-learned').val(),
+            tags: cleanTags($('#pin-form-tags').val())
+        }]},
+        html = renderTemplate('#pins-template', context),
+        preview = $('#pin-form-image-preview');
         preview.html(html);
         preview.find('.pin').width(240);
         preview.find('.pin').fadeIn(300);
@@ -41,9 +32,9 @@ $(window).load(function() {
             if (preview.find('.pin').height() > 305) {
                 $('#pin-form .modal-body').animate({
                     'height': preview.find('.pin').height()+25
-                }, 300);
+                }, 100);
             }
-        }, 300);
+        }, 100);
     }
 
     function dismissModal(modal) {
@@ -52,15 +43,12 @@ $(window).load(function() {
             modal.remove();
         }, 200);
     }
-    // End Helper Functions
 
-
-    // Start View Functions
     function createPinForm(editPinId) {
         $('body').append(renderTemplate('#pin-form-template', ''));
         var modal = $('#pin-form'),
             formFields = [$('#pin-form-image-url'), $('#pin-form-description'),
-            $('#pin-form-tags')],
+            $('#pin-form-learned'), $('#pin-form-tags')],
             pinFromUrl = getUrlParameter('pin-image-url');
         // If editable grab existing data
         if (editPinId) {
@@ -71,10 +59,25 @@ $(window).load(function() {
                 $('#pin-form-image-url').parent().hide();
                 $('#pin-form-image-upload').parent().hide();
                 $('#pin-form-description').val(editedPin.description);
+                $('#pin-form-learned').val(editedPin.learned);
                 $('#pin-form-tags').val(editedPin.tags);
+
+                $('#pin-title').text("Editing Pin");
                 createPinPreviewFromForm();
             });
+        }else{
+            $('#pin-title').text("New Pin");
+            $('#pin-form-description').val("");
+            $('#pin-form-learned').val("");
+            $('#pin-form-tags').val("");
+
+            setTimeout(function () {
+                if($("#pin-form-image-preview").find("#form-image").attr("src") != ""){
+                    $('#pin-form-image-upload').parent().hide();
+                }
+            }, 100);
         }
+
         modal.modal('show');
         // Auto update preview on field changes
         var timer;
@@ -114,26 +117,28 @@ $(window).load(function() {
                 message('Problem uploading image.', 'alert alert-error');
             });
         });
-        // If bookmarklet submit
-        if (pinFromUrl) {
-            $('#pin-form-image-upload').parent().css('display', 'none');
-            $('#pin-form-image-url').val(pinFromUrl);
-            $('.navbar').css('display', 'none');
-            modal.css({
-                'margin-top': -35,
-                'margin-left': -281
-            });
-        }
         // Submit pin on post click
         $('#pin-form-submit').click(function(e) {
+            var siteurl = $('#pin-website-image-url').val();
+            $('#pin-form-site-url').val(siteurl);
+
             e.preventDefault();
             $(this).off('click');
             $(this).addClass('disabled');
+
+            var siteurl = $('#pin-website-image-url').val();
+            var imageurl = $('#pin-form-image-url').val();
+
             if (editedPin) {
                 var apiUrl = '/api/v1/pin/'+editedPin.id+'/?format=json';
+
                 var data = {
                     description: $('#pin-form-description').val(),
-                    tags: cleanTags($('#pin-form-tags').val())
+                    learned: $('#pin-form-learned').val(),
+                    tags: cleanTags($('#pin-form-tags').val()),
+                    site: $('#pin-website-image-url').val(),
+                    siteurl: $('#pin-website-site-url').val(),
+                    url: $('#pin-form-image-url').val()
                 }
                 var promise = $.ajax({
                     type: "put",
@@ -153,18 +158,35 @@ $(window).load(function() {
                     lightbox();
                     dismissModal(modal);
                     editedPin = null;
+
+                    $('#pin-board-images').modal('hide');
+                    $('.loader-wrapper').modal('hide');
                 });
                 promise.error(function() {
                     message('Problem updating image.', 'alert alert-error');
+                    $('#pin-board-images').modal('hide');
+                });
+
+                promise.always(function(){
+                    $('#pin-board-images').modal('hide');
+                    $('#pin-form').modal('hide');
                 });
             } else {
                 var data = {
                     submitter: '/api/v1/user/'+currentUser.id+'/',
                     description: $('#pin-form-description').val(),
-                    tags: cleanTags($('#pin-form-tags').val())
+                    learned: $('#pin-form-learned').val(),
+                    tags: cleanTags($('#pin-form-tags').val()),
+                    url: $('#pin-form-website-url').val(),
+                    siteurl: $('#pin-form-site-url').val(),
+                    site: $('#pin-form-image-url').val()
                 };
-                if (uploadedImage) data.image = '/api/v1/image/'+uploadedImage+'/';
-                else data.url = $('#pin-form-image-url').val();
+                if (uploadedImage){
+                    data.image = '/api/v1/image/'+uploadedImage+'/';
+                    data.url = $('#pin-form-image-url').val();
+                }else{
+                    data.url = $('#pin-form-image-url').val();
+                }
                 var promise = postPinData(data);
                 promise.success(function(pin) {
                     if (pinFromUrl) return window.close();
@@ -175,29 +197,105 @@ $(window).load(function() {
                     lightbox();
                     dismissModal(modal);
                     uploadedImage = false;
+                    $('#pin-board-images').modal('hide');
+                    $('#pin-form').modal('hide');
                 });
                 promise.error(function() {
                     message('Problem saving image.', 'alert alert-error');
                 });
+
+                promise.always(function(){
+                    $('#pin-board-images').modal('hide');
+                    $('#pin-form').modal('hide');
+                });
             }
+
+            $(this).removeClass('disabled');
         });
         $('#pin-form-close').click(function() {
             if (pinFromUrl) return window.close();
             dismissModal(modal);
         });
-        createPinPreviewFromForm();
     }
-    // End View Functions
 
+    var tmp = $.fn.popover.Constructor.prototype.show;
+    $.fn.popover.Constructor.prototype.show = function () {
+      tmp.call(this);
+      if (this.options.callback) {
+        this.options.callback();
+      }
+    }
 
-    // Start Init
     window.pinForm = function(editPinId) {
         editPinId = typeof editPinId !== 'undefined' ? editPinId : null;
-        createPinForm(editPinId);
+        if(editPinId !== null) {
+            createPinForm(editPinId);
+        }
+
+        $('#newpin').popover({
+            placement : 'bottom',
+            'html':true,
+            'content': '<div id="pin-site">Pin from Website</div><div id="pin-upload">Upload image</div>',
+            callback: function() {
+                $('#pin-site').click(function() {
+                    $('#pin-website').modal('show');
+                    $('#newpin').popover('hide');
+
+                    $('#pin-form-image-upload').parent().delay(1000).fadeOut(30);
+                    $('#pin-form-image-upload').parent().delay(1000).hide();
+                    $('#pin-form-image-upload').delay(1000).hide()
+                });
+                $('#pin-upload').click(function() {
+                    $('#newpin').popover('hide');
+                    $('#pin-form-image-url').val('');
+                    createPinForm();
+                    createPinPreviewFromForm();
+                });
+            }
+        });
+
+        $('#pin-website-submit').click(function(){
+            var pinurl = $('#pin-website-image-url').val();
+            $('.loader-wrapper').css('display', 'block');
+            $.post('/validateurl',{ url: pinurl}).done(function(data) {
+                $('#pin-images').html("");
+                if(data['Valid']){
+                    $('#form-error').hide();
+                    $('#pin-website').modal('hide');
+
+                    data['urls'].forEach(function(imageUrl) {
+                        var image = document.createElement('img');
+                        $(image).attr("src",imageUrl);
+                        $('#pin-images').append(image);
+                    });
+
+                    $('#pin-board-images').modal('show');
+                    $('#pin-images img').click(function(){
+                        if($("#pin-form").length <= 0){
+                            createPinForm(editPinId);
+                        }else{
+                            createPinForm();
+                        }
+
+                        var siteurl = $('#pin-website-image-url').val();
+                        $('#pin-form-site-url').val(siteurl);
+                        $('#pin-form-image-url').val($(this).attr("src"));
+
+                        createPinPreviewFromForm();
+                        $('#pin-form').modal('show');
+                    });
+                }else{
+                    $('#form-error').text(data['Error']).show();
+                }
+            }).always(function(){
+                $('.loader-wrapper').css('display', 'none');
+            });
+        });
     }
 
     if (getUrlParameter('pin-image-url')) {
         createPinForm();
     }
-    // End Init
+
+
 });

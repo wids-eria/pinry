@@ -3,10 +3,14 @@ from tastypie.authorization import DjangoAuthorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import Unauthorized
 from tastypie.resources import ModelResource
+from tastypie.validation import Validation
 from django_images.models import Thumbnail
-
-from .models import Pin, Image
+from django.http import HttpResponseRedirect, HttpResponse
+import json
+from .models import Pin, Image, WhiteListDomain
 from ..users.models import User
+import sys,re,urllib2
+from bs4 import BeautifulSoup
 
 
 class PinryAuthorization(DjangoAuthorization):
@@ -87,6 +91,77 @@ class ImageResource(ModelResource):
         queryset = Image.objects.all()
         authorization = DjangoAuthorization()
 
+class WhitelistValidation(Validation):
+    def is_valid(self, bundle, request=None):
+        errors = {}
+
+        #Only do validation feedback when the pin is being created from a url and not uploaded
+        if request.META["REQUEST_METHOD"] == "POST":
+            url = bundle.data['url']
+            if not url.startswith("/media"):
+                if not self.check_domains(url):
+                    errors = {"url","Url {0} is not allowed!".format(url)}
+
+                site = bundle.data['site']
+                if self.check_domains(site):
+                   # errors = {"site","Site {0} is not allowed!".format(site)}
+                   pass
+
+        return errors
+
+    def prep_url(self,url):
+        if not url.startswith("http"):
+            url = "http://" + url
+        temp = re.search("((?<=http://)|(?<=https://))(?!www){1}.*",url)
+
+        if temp == None:
+            url = re.search("(?<=\.).*",url)
+        else:
+            url = temp
+
+        if url == None:
+            return None
+        return url.group(0)
+
+    def check_domains(self,url):
+        url = self.prep_url(url)
+
+        if url != None:
+            matched = False
+            for match in WhiteListDomain.objects.all():
+                match = self.prep_url(match.url)
+
+                if match != None and re.search("({0})(\/|$)".format(match), url):
+                    matched = True
+                    break;
+            return matched
+        return False
+
+def ValidateUrl(request):
+    validator = WhitelistValidation()
+    url = request.POST.dict()['url']
+    if not url.startswith("http"):
+        url = "http://" + url
+
+    valid = validator.check_domains(url)
+    data = {}
+    data['Valid'] = valid
+
+    if not valid:
+        data['Error'] = 'Url {0} is not allowed!'.format(url)
+        return HttpResponse(json.dumps(data),content_type = "application/json")
+
+    response = urllib2.urlopen(url).read()
+    soup = BeautifulSoup(response)
+
+    images = []
+    for img in soup.find_all('img'):
+        url = img.get('src')
+        if url.startswith("http"):
+            images.append(url)
+    data['urls'] = images
+
+    return HttpResponse(json.dumps(data),content_type = "application/json")
 
 class PinResource(ModelResource):
     submitter = fields.ToOneField(UserResource, 'submitter', full=True)
@@ -95,7 +170,7 @@ class PinResource(ModelResource):
 
     def hydrate_image(self, bundle):
         url = bundle.data.get('url', None)
-        if url:
+        if url and not url.startswith("/"):
             image = Image.objects.create_for_url(url)
             bundle.data['image'] = '/api/v1/image/{}/'.format(image.pk)
         return bundle
@@ -130,7 +205,7 @@ class PinResource(ModelResource):
         return super(PinResource, self).save_m2m(bundle)
 
     class Meta:
-        fields = ['id', 'url', 'origin', 'description']
+        fields = ['id', 'url', 'siteurl','origin', 'description', 'learned']
         ordering = ['id']
         filtering = {
             'submitter': ALL_WITH_RELATIONS
@@ -140,3 +215,4 @@ class PinResource(ModelResource):
         include_resource_uri = False
         always_return_data = True
         authorization = PinryAuthorization()
+        validation = WhitelistValidation()

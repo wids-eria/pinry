@@ -14,17 +14,19 @@
             {{/if}}
             <a href="{{image.standard.image}}" class="lightbox" data-id="{{id}}">
                 <div class="image-wrapper" style="width: {{image.thumbnail.width}}px; height: {{image.thumbnail.height}}px;">
-                    <img src="{{image.thumbnail.image}}" width="{{image.thumbnail.width}}" height="{{image.thumbnail.height}}"/>
+                    <img id="form-image" src="{{image.thumbnail.image}}" width="{{image.thumbnail.width}}" height="{{image.thumbnail.height}}"/>
                 </div>
             </a>
+
+            <p>
             {{#if description}}
-                <p>{{description}}</p>
+                {{description}}
             {{/if}}
+            </p>
+
             <div class="pin-footer clearfix">
-                <div class="avatar pull-left">
-                    <img src="http://gravatar.com/avatar/{{submitter.gravatar}}">
-                </div>
-                <div class="text pull-right">
+                <div class="text">
+
                     <span class="dim">pinned by</span>
                     <a href="/pins/user/{{submitter.username}}/">{{submitter.username}}</a>
                     {{#if tags}}

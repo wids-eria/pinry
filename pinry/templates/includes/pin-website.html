@@ -1,0 +1,38 @@
+{% verbatim %}
+
+<div class="modal fade" id="pin-website">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Pin Image from a Website</h3>
+            </div>
+            <div class="modal-body">
+                    <div class="form-group">
+                        <label class="control-label" for="pin-website-image-url">Website URL</label>
+                        <input type="text" name="pin-website-image-url" id="pin-website-image-url" class="form-control"/>
+                    </div>
+                    <div id="form-error"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal modal-backdrop" id="pin-website-close">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="pin-website-submit">Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="pin-board-images">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Choose Image</h3>
+            </div>
+            <div class="modal-body">
+                <div id="pin-images">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endverbatim %}

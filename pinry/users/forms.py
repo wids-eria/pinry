@@ -10,6 +10,7 @@ class UserCreationForm(forms.ModelForm):
     """
     error_messages = {
         'duplicate_username': _("A user with that username already exists."),
+        'n_username': _("A user with that username already exists."),
     }
     username = forms.RegexField(label=_("Username"), max_length=30,
         regex=r'^[\w-]+$')

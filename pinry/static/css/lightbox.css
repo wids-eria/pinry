@@ -32,7 +32,7 @@
 }
 
 .lightbox-data {
-    color: white;
+    background: white;
     -webkit-border-bottom-right-radius: 3px;
      -webkit-border-bottom-left-radius: 3px;
         -moz-border-radius-bottomright: 3px;
@@ -42,8 +42,13 @@
 }
 
 .lightbox-data .description {
-    border-bottom: 1px solid #333;
-    font-family: "Georgia", "Times", "Times New Roman", Serif;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    padding: 8px;
+}
+
+.lightbox-data .learned {
+    font-family: 'Open Sans', sans-serif;
     font-size: 16px;
     padding: 8px;
 }
@@ -57,15 +62,23 @@
        -moz-border-radius: 2px;
             border-radius: 2px;
 }
-
 .lightbox-data .text {
-    font-weight: bold;
     margin-top: 3px;
+    padding: 8px;
 }
-
+.lightbox-data #footer-wrapper{
+    width: 100%;
+    border-top: 1px solid gray;
+}
 .lightbox-data .text .dim {
     color: #999;
     font-size: 14px;
+}
+.text .dim{
+    color: #999;
+}
+.text{
+    color: #428bca;
 }
 
 .lightbox-data .extra {

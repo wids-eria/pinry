@@ -1,7 +1,5 @@
-<!DOCTYPE html>
-{% load static from staticfiles %}
-{% load compress %}
-<html lang="en">
+<!DOCTYPE html>{% load static from staticfiles %}
+{% load compress %}<html lang="en">
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
@@ -13,20 +11,7 @@
             <link rel="alternate" type="application/rss+xml" href="/feeds/latest-pins/">
         {% endif %}
 
-        <!--  ___                     ___           ___                 
-             /  /\      ___          /__/\         /  /\          ___   
-            /  /::\    /  /\         \  \:\       /  /::\        /__/|  
-           /  /:/\:\  /  /:/          \  \:\     /  /:/\:\      |  |:|  
-          /  /:/~/:/ /__/::\      _____\__\:\   /  /:/~/:/      |  |:|  
-         /__/:/ /:/  \__\/\:\__  /__/::::::::\ /__/:/ /:/___  __|__|:|  
-         \  \:\/:/      \  \:\/\ \  \:\~~\~~\/ \  \:\/:::::/ /__/::::\  
-          \  \::/        \__\::/  \  \:\  ~~~   \  \::/~~~~     ~\~~\:\ 
-           \  \:\        /__/:/    \  \:\        \  \:\           \  \:\
-            \  \:\       \__\/      \  \:\        \  \:\           \__\/
-             \__\/                   \__\/         \__\/             -->
-
-        <title>{% block title %}Pinry{% endblock %}</title>
-
+        <title>{% block title %}GLS PinBoard{% endblock %}</title>
         <!-- CSS -->
         <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,700"/>
         {% compress css %}
@@ -40,7 +25,6 @@
             {% block extra_css %}{% endblock %}
         {% endcompress %}
         <!-- End CSS -->
-
         <!-- Start JavaScript Variables -->
         <script>
         var apiLimitPerPage = {{ API_LIMIT_PER_PAGE }},
@@ -74,15 +58,14 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a href="{% url 'core:recent-pins' %}" class="navbar-brand">
-                        <img src="{% static "img/logo-dark.png" %}" alt="Pinry"/>
+                        <h4>GLS PinBoard</h4>
                     </a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_authenticated %}
-                            <li><a onclick="pinForm()">New Pin</a></li>
+                            <li><a id="newpin" onclick="pinForm()">New Pin</a></li>
                             <li><a href="{% url 'users:logout' %}">Logout</a></li>
-                            <li>{% include "includes/bookmarklet_link.html" %}</li>
                         {% else %}
                             <li><a href="{% url 'users:login' %}">Login</a></li>
                             <li><a href="{% url 'users:register' %}">Register</a></li>
@@ -94,15 +77,11 @@
         <!-- End Navigation -->
 
         <!-- Messages -->
-        <ul id="messages"></ul>
         <!-- End Messages -->
 
         <!-- No Script -->
         <div id="noscript">
-            <noscript>Scripting is not enabled in your browser, if you are using
-                a plugin like NoScript *high five*! Our code is open source and
-                you can view it on
-                <a href="https://github.com/pinry/pinry/">GitHub</a>.
+            <noscript>Scripting is not enabled in your browser!
                 <style>.spinner{display:none;}</style></noscript>
         </div>
         <!-- End No Script -->
@@ -116,6 +95,7 @@
         {% include "includes/lightbox.html" %}
         {% include "includes/pins.html" %}
         {% include "includes/pin_form.html" %}
+        {% include "includes/pin-website.html" %}
         {% block extra_templates %}{% endblock %}
         <!-- End Templates -->
 
@@ -130,10 +110,14 @@
             <script src="{% static "js/lightbox.js" %}"></script>
             <script src="{% static "js/pinry.js" %}"></script>
             <script src="{% static "js/pin-form.js" %}"></script>
+
         {% endcompress %}
         {% compress js inline %}
             {% block extra_js %}{% endblock %}
         {% endcompress %}
         <!-- End JavaScript -->
+        <div class="loader-wrapper">
+            <div class="loader"></div>
+        </div>
     </body>
 </html>

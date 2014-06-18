@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView
@@ -8,7 +8,7 @@ from braces.views import JSONResponseMixin, LoginRequiredMixin
 from django_images.models import Thumbnail
 
 from .forms import ImageForm
-
+import json
 
 class CreateImage(JSONResponseMixin, LoginRequiredMixin, CreateView):
     template_name = None  # JavaScript-only view

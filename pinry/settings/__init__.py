@@ -31,11 +31,11 @@ STATICFILES_DIRS = [os.path.join(SITE_ROOT, 'pinry/static')]
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder'
-)
+    'compressor.finders.CompressorFinder',)
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
+    'django.template.loaders.eggs.Loader',
 )
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
