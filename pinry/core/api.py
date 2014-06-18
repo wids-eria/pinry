@@ -97,7 +97,8 @@ class WhitelistValidation(Validation):
 
         #Only do validation feedback when the pin is being created from a url and not uploaded
         if request.META["REQUEST_METHOD"] == "POST":
-            url = bundle.data['url']
+            #should also validate image url later
+            url = bundle.data['siteurl']
             if not url.startswith("/media"):
                 if not self.check_domains(url):
                     errors = {"url","Url {0} is not allowed!".format(url)}
